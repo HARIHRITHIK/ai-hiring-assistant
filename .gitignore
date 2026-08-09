@@ -1,0 +1,45 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+*.env
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# Database
+*.sqlite3
+*.db
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Model cache (downloaded at runtime)
+.cache/
+
+# Uploaded files
+*.pdf
+*.docx
+
+# Torch / torchvision cache
+torchvision/

@@ -1,0 +1,298 @@
+/* Minimal, Aesthetic Dark Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html, body, [class*="st-"] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #e4e4e7;
+}
+
+/* Background & Main Layout */
+.stApp {
+  background-color: #09090b;
+  color: #e4e4e7;
+}
+
+/* Top Header styling */
+h1 {
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: #ffffff !important;
+}
+
+h2, h3, h4 {
+  font-weight: 600 !important;
+  color: #f4f4f5 !important;
+  letter-spacing: -0.01em !important;
+}
+
+p, span, label {
+  color: #a1a1aa;
+}
+
+/* Cards & Containers */
+div[data-testid="stMetricValue"] {
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+div[data-testid="stMetricLabel"] {
+  font-size: 0.85rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #71717a !important;
+}
+
+/* ── FIX: File Uploader Overlap ── */
+.stFileUploader {
+  margin-bottom: 1rem !important;
+}
+
+.stFileUploader > section {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  padding: 1rem !important;
+  min-height: 90px !important;
+}
+
+.stFileUploader > section > div {
+  padding: 0.5rem 0 !important;
+}
+
+/* Ensure uploader button doesn't clip */
+.stFileUploader [data-testid="stFileUploaderDropzone"] {
+  min-height: 80px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stFileUploader small {
+  color: #71717a !important;
+  font-size: 0.75rem !important;
+}
+
+/* Input boxes & Text areas */
+.stTextArea textarea {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  color: #f4f4f5 !important;
+  font-size: 0.95rem !important;
+}
+
+.stTextArea textarea:focus {
+  border-color: #52525b !important;
+  box-shadow: none !important;
+}
+
+/* Minimal Buttons */
+button[kind="primary"], .stButton > button {
+  background-color: #27272a !important;
+  color: #f4f4f5 !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  padding: 0.5rem 1.2rem !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+button[kind="primary"]:hover, .stButton > button:hover {
+  background-color: #3f3f46 !important;
+  border-color: #52525b !important;
+  color: #ffffff !important;
+}
+
+/* Tab navigation styling */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px;
+  border-bottom: 1px solid #27272a;
+}
+
+.stTabs [data-baseweb="tab"] {
+  height: 40px;
+  background-color: transparent;
+  border-radius: 6px;
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0 16px;
+}
+
+.stTabs [aria-selected="true"] {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+  border: 1px solid #27272a !important;
+}
+
+/* ── Tab Content Area ── */
+.stTabs [data-baseweb="tab-panel"] {
+  padding: 1.25rem 0.5rem !important;
+}
+
+/* Expander Cards */
+.streamlit-expanderHeader {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 6px !important;
+  color: #f4f4f5 !important;
+  font-size: 0.92rem !important;
+}
+
+details[data-testid="stExpander"] {
+  border: 1px solid #27272a !important;
+  border-radius: 6px !important;
+  background-color: #18181b !important;
+  margin-bottom: 0.6rem !important;
+}
+
+/* Custom Minimal Cards */
+.minimal-card {
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.minimal-badge {
+  display: inline-block;
+  background-color: #27272a;
+  color: #e4e4e7;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid #3f3f46;
+}
+
+.minimal-badge-gap {
+  display: inline-block;
+  background-color: #271c1c;
+  color: #f87171;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid #451a1a;
+}
+
+/* ── Summary / Markdown Content Rendering ── */
+.summary-content h3 {
+  font-size: 1.1rem !important;
+  color: #f4f4f5 !important;
+  margin-top: 1rem !important;
+  margin-bottom: 0.4rem !important;
+  border-bottom: 1px solid #27272a;
+  padding-bottom: 0.3rem;
+}
+
+.summary-content p, .summary-content li {
+  color: #d4d4d8 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.7 !important;
+}
+
+.summary-content strong, .summary-content b {
+  color: #ffffff !important;
+}
+
+/* ── Interview Question Cards ── */
+.interview-card {
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.interview-card .q-number {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+  margin-bottom: 0.3rem;
+}
+
+.interview-card .q-text {
+  font-size: 0.95rem;
+  color: #f4f4f5;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+.interview-card .q-hint {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  line-height: 1.5;
+  border-left: 2px solid #3f3f46;
+  padding-left: 0.75rem;
+}
+
+/* ── Roadmap Phases ── */
+.roadmap-content h4 {
+  font-size: 1rem !important;
+  color: #f4f4f5 !important;
+  margin-top: 1rem !important;
+}
+
+.roadmap-content li {
+  color: #d4d4d8 !important;
+  line-height: 1.7 !important;
+  font-size: 0.9rem !important;
+}
+
+/* ── Metric Score Cards ── */
+.score-card {
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.score-card .score-label {
+  font-size: 0.75rem;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.score-card .score-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ── Skill Diagnostics Layout ── */
+.skill-section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a1a1aa;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #27272a;
+}
+
+/* Download button styling */
+.stDownloadButton > button {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+.stDownloadButton > button:hover {
+  background-color: #27272a !important;
+  border-color: #52525b !important;
+}

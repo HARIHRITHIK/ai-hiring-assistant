@@ -1,0 +1,12 @@
+streamlit
+sentence-transformers
+transformers
+torch
+spacy
+pdfminer.six
+python-docx
+scikit-learn
+numpy
+pandas
+reportlab
+accelerate
