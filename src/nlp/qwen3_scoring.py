@@ -51,9 +51,10 @@ def _load_model():
         _TOKENIZER = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
         _MODEL = AutoModelForCausalLM.from_pretrained(
             model_name,
-            device_map="auto",
-            torch_dtype="auto",
+            torch_dtype=torch.float16,
+            device_map="cpu",
             cache_dir=cache_dir,
+            low_cpu_mem_usage=True,
         )
     return _TOKENIZER, _MODEL
 

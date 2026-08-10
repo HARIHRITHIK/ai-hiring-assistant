@@ -34,12 +34,8 @@ dist/
 build/
 *.egg
 
-# Model cache (downloaded at runtime)
+# Model cache (downloaded at runtime — ~1GB, must not be committed)
 .cache/
-
-# Uploaded files
-*.pdf
-*.docx
 
 # Torch / torchvision cache
 torchvision/
