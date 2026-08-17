@@ -1,22 +1,33 @@
-"""Utilities for cleaning the raw job description text.
+# src/data_processing/job_parser.py
+"""Utilities for cleaning, normalising, and extracting key details from Job Descriptions."""
+import re
+from src.utils.logging import get_logger
 
-Provides a simple function ``clean_job_description`` that strips extra whitespace
-and normalises line endings.
-"""
+logger = get_logger("data_processing.job_parser")
+
 
 def clean_job_description(text: str) -> str:
-    """Return a cleaned version of a job description.
+    """Clean and normalise raw job description text.
 
     Parameters
     ----------
-    text: str
+    text : str
         Raw job description entered by the user.
 
     Returns
     -------
     str
-        Normalised text with excess whitespace removed.
+        Normalised text with excess whitespace, control characters, and redundant formatting cleaned.
     """
-    # Collapse multiple newlines/spaces and strip leading/trailing whitespace
-    cleaned = " ".join(text.split())
-    return cleaned
+    if not text or not text.strip():
+        return ""
+
+    # Replace tabs and carriage returns
+    cleaned = text.replace('\r\n', '\n').replace('\r', '\n').replace('\t', ' ')
+    
+    # Remove excessive blank lines
+    lines = [re.sub(r'\s+', ' ', line).strip() for line in cleaned.splitlines() if line.strip()]
+    normalized = "\n".join(lines)
+    
+    logger.info(f"Cleaned job description: {len(normalized)} chars ({len(normalized.split())} words)")
+    return normalized

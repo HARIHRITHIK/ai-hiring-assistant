@@ -18,12 +18,10 @@ from src.nlp.embedding import get_embeddings
 from src.nlp.skill_list import SKILL_SET, DOMAIN_SKILL_EXPANSION, JOB_TITLE_FILTER_WORDS
 import spacy
 
-# Setup project-specific paths
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-CACHE_DIR = os.path.join(PROJECT_ROOT, ".cache")
-os.makedirs(CACHE_DIR, exist_ok=True)
-os.environ["HF_HOME"] = CACHE_DIR
-os.environ["HF_CACHE_DIR"] = CACHE_DIR
+from src.nlp.config import CACHE_DIR, LLM_MODEL_NAME, SPACY_MODEL_NAME
+from src.utils.logging import get_logger
+
+logger = get_logger("nlp.qwen_scoring")
 
 # Lazy-load spaCy NLP model
 _SPACY_NLP = None
@@ -31,11 +29,13 @@ def _get_spacy():
     global _SPACY_NLP
     if _SPACY_NLP is None:
         try:
-            _SPACY_NLP = spacy.load("en_core_web_sm")
+            logger.info(f"Loading spaCy model: {SPACY_MODEL_NAME}")
+            _SPACY_NLP = spacy.load(SPACY_MODEL_NAME)
         except OSError:
+            logger.info(f"Downloading spaCy model: {SPACY_MODEL_NAME}")
             from spacy.cli import download
-            download("en_core_web_sm")
-            _SPACY_NLP = spacy.load("en_core_web_sm")
+            download(SPACY_MODEL_NAME)
+            _SPACY_NLP = spacy.load(SPACY_MODEL_NAME)
     return _SPACY_NLP
 
 # Lazy-load singleton for Qwen LLM
@@ -46,17 +46,17 @@ def _load_model():
     """Load the Qwen2.5-0.5B-Instruct model and tokenizer."""
     global _MODEL, _TOKENIZER
     if _MODEL is None or _TOKENIZER is None:
-        model_name = "Qwen/Qwen2.5-0.5B-Instruct"
-        cache_dir = CACHE_DIR
-        _TOKENIZER = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
+        logger.info(f"Loading Causal LM: {LLM_MODEL_NAME} (device: cpu, dtype: float16)")
+        _TOKENIZER = AutoTokenizer.from_pretrained(LLM_MODEL_NAME, cache_dir=CACHE_DIR)
         _MODEL = AutoModelForCausalLM.from_pretrained(
-            model_name,
+            LLM_MODEL_NAME,
             torch_dtype=torch.float16,
             device_map="cpu",
-            cache_dir=cache_dir,
+            cache_dir=CACHE_DIR,
             low_cpu_mem_usage=True,
         )
     return _TOKENIZER, _MODEL
+
 
 
 # ──────────────────────────────────────────────
@@ -257,7 +257,7 @@ def _extract_education(lines: List[str], full_text_lower: str) -> List[str]:
             edu_parts.append(inst_display)
     
     if edu_parts:
-        formatted = " — ".join(edu_parts)
+        formatted = " - ".join(edu_parts)
         if cgpa_str:
             formatted += f" ({cgpa_str})"
         return [formatted]

@@ -1,12 +1,17 @@
-import streamlit as st
+# app.py
 import os
+import streamlit as st
 from src.data_processing.resume_parser import parse_resume
 from src.data_processing.job_parser import clean_job_description
 from src.nlp.qwen3_scoring import analyze_resume
 from src.report.pdf_report import generate_pdf_report
+from src.visualization.charts import plot_ats_gauge, plot_skill_breakdown
+from src.utils.logging import get_logger
+
+logger = get_logger("app")
 
 st.set_page_config(
-    page_title="AI Resume & ATS Evaluator",
+    page_title="AI Resume & ATS Analytics Engine",
     page_icon="📄",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -44,22 +49,21 @@ st.markdown("""
 col_left, col_right = st.columns(2, gap="large")
 
 with col_left:
-    # Section label (our own — Streamlit's built-in label is hidden via CSS)
     st.markdown("""
     <p style="font-size: 0.72rem; font-weight: 700; color: #a1a1aa; text-transform: uppercase;
               letter-spacing: 0.1em; margin-bottom: 0.6rem;">
         &#9679;&ensp;Candidate Resume
     </p>
     <p style="font-size: 0.82rem; color: #52525b; margin: -0.25rem 0 0.6rem 0; line-height: 1.4;">
-        Drag &amp; drop or click to upload
+        Drag &amp; drop or click to upload (PDF, DOCX)
     </p>
     """, unsafe_allow_html=True)
 
     resume_file = st.file_uploader(
-        "Upload PDF or DOCX",          # kept for screen readers / accessibility
+        "Upload PDF or DOCX",
         type=["pdf", "docx"],
         key="resume_uploader",
-        label_visibility="collapsed",  # hides the duplicate Streamlit label
+        label_visibility="collapsed",
     )
 
 with col_right:
@@ -76,7 +80,7 @@ with col_right:
     job_desc = st.text_area(
         "Paste job requirements",
         height=160,
-        placeholder="e.g.  AI Engineer — must have experience with LLMs, Python, PyTorch, MLOps...",
+        placeholder="e.g. AI Engineer — must have experience with LLMs, Python, PyTorch, MLOps, transformers, RAG...",
         label_visibility="collapsed",
     )
 
@@ -91,88 +95,74 @@ analyze_btn = st.button("Run AI Assessment  →", use_container_width=True)
 # ─────────────────────────────────────────────────
 if analyze_btn:
     if not resume_file:
-        st.error("Please upload a resume file to continue.")
+        st.error("Please upload a resume file (PDF or DOCX) to continue.")
         st.stop()
     if not job_desc.strip():
-        st.error("Please paste a job description to continue.")
+        st.error("Please paste a target job description to continue.")
         st.stop()
-
-    # ── Step 1: Parse ──
-    progress_msgs = [
-        "Reading resume...",
-        "Extracting candidate information...",
-        "Matching skills against job requirements...",
-        "Calculating ATS compatibility score...",
-        "Generating interview questions...",
-        "Creating 30-60-90 day roadmap...",
-        "Finalising assessment report...",
-    ]
 
     status = st.empty()
 
-    status.markdown(f"""
-    <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
-                font-size:0.88rem; padding:0.75rem 0;">
-        <span style="color:#3b82f6;">&#9632;</span> {progress_msgs[0]}
-    </div>""", unsafe_allow_html=True)
+    def update_status(msg: str):
+        status.markdown(f"""
+        <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
+                    font-size:0.88rem; padding:0.75rem 0;">
+            <span style="color:#3b82f6;">&#9632;</span> {msg}
+        </div>""", unsafe_allow_html=True)
 
-    resume_text = parse_resume(resume_file)
+    try:
+        # ── Step 1: Parse Documents ──
+        update_status("Reading and parsing candidate resume...")
+        resume_text = parse_resume(resume_file)
 
-    status.markdown(f"""
-    <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
-                font-size:0.88rem; padding:0.75rem 0;">
-        <span style="color:#3b82f6;">&#9632;</span> {progress_msgs[1]}
-    </div>""", unsafe_allow_html=True)
+        update_status("Normalizing target job requirements...")
+        job_text = clean_job_description(job_desc)
 
-    job_text = clean_job_description(job_desc)
+        # ── Step 2: AI Multi-Layer Analysis ──
+        update_status("Executing NLP skill extraction & dense vector embedding match...")
+        result = analyze_resume(resume_text, job_text)
 
-    status.markdown(f"""
-    <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
-                font-size:0.88rem; padding:0.75rem 0;">
-        <span style="color:#3b82f6;">&#9632;</span> {progress_msgs[2]}
-    </div>""", unsafe_allow_html=True)
+        meta = result.get("candidate_meta", {})
+        match_result = {
+            "ats_score":           result.get("ats_score", 0.0),
+            "skill_match_percent": result.get("skill_match_percent", 0.0),
+            "missing_skills":      result.get("missing_skills", []),
+            "strengths":           result.get("strengths", []),
+            "weaknesses":          result.get("weaknesses", []),
+        }
+        summary      = result.get("summary", "")
+        interview_qs = result.get("suggested_interview_questions", [])
+        roadmap      = result.get("learning_roadmap", "")
 
-    # ── Step 2: AI Analysis ──
-    result = analyze_resume(resume_text, job_text)
+        # ── Step 3: Compile Executive PDF ──
+        update_status("Compiling executive PDF evaluation report...")
+        pdf_interview_qs = []
+        for item in interview_qs:
+            if isinstance(item, dict):
+                pdf_interview_qs.append(
+                    f"{item.get('question', '')} (Ideal Answer: {item.get('ideal_answer_hint', '')})"
+                )
+            else:
+                pdf_interview_qs.append(str(item))
 
-    meta = result.get("candidate_meta", {})
-    match_result = {
-        "ats_score":           result.get("ats_score", 0.0),
-        "skill_match_percent": result.get("skill_match_percent", 0.0),
-        "missing_skills":      result.get("missing_skills", []),
-        "strengths":           result.get("strengths", []),
-        "weaknesses":          result.get("weaknesses", []),
-    }
-    summary      = result.get("summary", "")
-    interview_qs = result.get("suggested_interview_questions", [])
-    roadmap      = result.get("learning_roadmap", "")
+        pdf_bytes = generate_pdf_report(
+            resume_text=resume_text,
+            job_text=job_text,
+            match_result=match_result,
+            summary=summary,
+            interview_qs=pdf_interview_qs,
+            roadmap=roadmap,
+            candidate_meta=meta,
+            job_title=job_desc[:60].strip(),
+        )
 
-    status.markdown(f"""
-    <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
-                font-size:0.88rem; padding:0.75rem 0;">
-        <span style="color:#3b82f6;">&#9632;</span> {progress_msgs[6]}
-    </div>""", unsafe_allow_html=True)
+        status.empty()  # Clear status message
 
-    # Generate PDF while showing final status message
-    pdf_interview_qs = []
-    for item in interview_qs:
-        if isinstance(item, dict):
-            pdf_interview_qs.append(
-                f"{item.get('question', '')} (Ideal Answer: {item.get('ideal_answer_hint', '')})"
-            )
-        else:
-            pdf_interview_qs.append(str(item))
-
-    pdf_bytes = generate_pdf_report(
-        resume_text=resume_text,
-        job_text=job_text,
-        match_result=match_result,
-        summary=summary,
-        interview_qs=pdf_interview_qs,
-        roadmap=roadmap,
-    )
-
-    status.empty()  # clear progress indicator
+    except Exception as err:
+        status.empty()
+        logger.error(f"Assessment error: {err}", exc_info=True)
+        st.error(f"Error analyzing documents: {err}")
+        st.stop()
 
     # ═══════════════════════════════════════════════════
     # RESULTS SECTION
@@ -183,6 +173,9 @@ if analyze_btn:
 
     # ── Candidate Profile Header ──
     cand_name = meta.get("candidate_name", "Candidate")
+    if cand_name == "Candidate Profile" or not cand_name:
+        cand_name = "Candidate"
+
     edu_list  = meta.get("education", ["Technical Background"])
     edu_str   = edu_list[0] if edu_list else "Technical Background"
     proj_list = meta.get("projects", [])
@@ -257,11 +250,12 @@ if analyze_btn:
 
     # ── Tabs ──
     st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
-    tab_summary, tab_skills, tab_interview, tab_roadmap = st.tabs([
+    tab_summary, tab_skills, tab_interview, tab_roadmap, tab_analytics = st.tabs([
         "📄 Candidate Summary",
         "⚡ Skill Diagnostics",
         "🎯 Interview Guide",
         "🚀 30-60-90 Roadmap",
+        "📊 Visual Analytics",
     ])
 
     # TAB 1 — Summary
@@ -329,6 +323,29 @@ if analyze_btn:
         st.markdown("<div class='roadmap-content'>", unsafe_allow_html=True)
         st.markdown(roadmap)
         st.markdown("</div>", unsafe_allow_html=True)
+
+    # TAB 5 — Visual Analytics
+    with tab_analytics:
+        st.markdown("<div class='skill-section-title'>ATS Compatibility Rating &amp; Skill Distribution</div>", unsafe_allow_html=True)
+        v_col1, v_col2 = st.columns([1, 1])
+        with v_col1:
+            fig_gauge = plot_ats_gauge(match_result['ats_score'])
+            st.plotly_chart(fig_gauge, use_container_width=True, config={'displayModeBar': False})
+        with v_col2:
+            st.markdown("<div style='padding-top: 1.5rem;'>", unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="minimal-card" style="padding: 1.25rem; margin-bottom: 1rem;">
+                <p style="color:#a1a1aa; font-size:0.82rem; margin:0 0 0.4rem 0;">
+                    Verified Strengths Count: <strong style="color:#3b82f6;">{len(match_result['strengths'])}</strong>
+                </p>
+                <p style="color:#a1a1aa; font-size:0.82rem; margin:0;">
+                    Identified Gaps Count: <strong style="color:#ef4444;">{len(match_result['missing_skills'])}</strong>
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            fig_bar = plot_skill_breakdown(match_result['strengths'], match_result['missing_skills'])
+            st.plotly_chart(fig_bar, use_container_width=True, config={'displayModeBar': False})
+            st.markdown("</div>", unsafe_allow_html=True)
 
     # ── Download Report ──
     st.markdown("<div style='height:1.75rem;'></div>", unsafe_allow_html=True)
