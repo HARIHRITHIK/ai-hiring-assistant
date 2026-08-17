@@ -26,7 +26,7 @@ if os.path.exists('assets/style.css'):
 # HEADER
 # ─────────────────────────────────────────────────
 st.markdown("""
-<div style="padding: 1.5rem 0 1.25rem 0; border-bottom: 1.5px solid #27272a; margin-bottom: 1.75rem;">
+<div style="padding: 1.5rem 0 1.25rem 0; border-bottom: 1.5px solid #27272a; margin-bottom: 1.5rem;">
     <p style="color: #3b82f6; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
               letter-spacing: 0.14em; margin: 0 0 0.4rem 0;">
         AI-POWERED TALENT INTELLIGENCE
@@ -41,6 +41,57 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────────
+# 30-SECOND RECRUITER DEMO BANNER
+# ─────────────────────────────────────────────────
+SAMPLE_RESUME_TEXT = """ASWINI R
+Email: aswini.ai@gmail.com | Phone: +91 9876543210
+
+EDUCATION
+Bachelor of Technology in Artificial Intelligence and Data Science
+Sona College of Technology - CGPA: 8.20
+
+TECHNICAL SKILLS
+Python, Machine Learning, Deep Learning, NLP, Data Science, Artificial Intelligence, LLaMA2, QLoRA, Generative AI, PyTorch, Transformers, HuggingFace, Pandas, NumPy, Scikit-learn, Streamlit, Git
+
+KEY PROJECTS
+1. WealthWiser - Personal Finance Assistant (LLaMA2 & QLoRA Fine-Tuning): Fine-tuned open-source 7B LLM using PEFT/QLoRA for financial QA and investment analysis.
+2. Soul Changer Bot - Generative AI Assistant: Built contextual conversation agent with prompt engineering and LangChain embeddings.
+3. Sentiment Analysis Dashboard: End-to-end NLP classifier deployed with Flask and Scikit-learn.
+
+PUBLICATIONS
+Building a Personal Finance Assistant Using LLaMA2 and QLoRA to Support Investors - Published in International Journal of AI Research.
+"""
+
+SAMPLE_JOB_DESC = """Senior AI Engineer / Python Developer
+Role Overview:
+We are seeking an AI Engineer to design, evaluate, and deploy production NLP and Generative AI systems.
+
+Requirements:
+- Strong proficiency in Python, PyTorch, Transformers, HuggingFace, and LLM fine-tuning
+- Hands-on experience with NLP, Machine Learning, Deep Learning, and RAG architectures
+- Experience with Docker, Kubernetes, MLOps, CI/CD pipelines, and cloud services (AWS/GCP)
+- Solid computer science fundamentals in algorithms, data structures, and system design
+- Ability to build end-to-end AI applications with Streamlit or FastAPI
+"""
+
+demo_col_info, demo_col_btn = st.columns([3, 1.4], gap="medium")
+with demo_col_info:
+    st.markdown("""
+    <div style="padding: 0.2rem 0;">
+        <span style="color: #fafafa; font-size: 0.88rem; font-weight: 700;">
+            ⚡ Quick Recruiter Demo (30-Second Evaluation)
+        </span><br/>
+        <span style="color: #71717a; font-size: 0.8rem;">
+            See how the system evaluates a resume against a real-world AI Engineer job description in 1 click.
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+with demo_col_btn:
+    demo_btn = st.button("⚡ Try Demo — AI Engineer Resume", use_container_width=True)
+
+st.markdown("<div style='height: 0.75rem;'></div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────
 # INPUT SECTION
@@ -93,14 +144,7 @@ analyze_btn = st.button("Run AI Assessment  →", use_container_width=True)
 # ─────────────────────────────────────────────────
 # ANALYSIS ENGINE & RESULTS
 # ─────────────────────────────────────────────────
-if analyze_btn:
-    if not resume_file:
-        st.error("Please upload a resume file (PDF or DOCX) to continue.")
-        st.stop()
-    if not job_desc.strip():
-        st.error("Please paste a target job description to continue.")
-        st.stop()
-
+if analyze_btn or demo_btn:
     status = st.empty()
 
     def update_status(msg: str):
@@ -111,12 +155,26 @@ if analyze_btn:
         </div>""", unsafe_allow_html=True)
 
     try:
-        # ── Step 1: Parse Documents ──
-        update_status("Reading and parsing candidate resume...")
-        resume_text = parse_resume(resume_file)
+        if demo_btn:
+            update_status("Loading sample candidate profile and job requirements...")
+            resume_text = SAMPLE_RESUME_TEXT
+            job_text = clean_job_description(SAMPLE_JOB_DESC)
+            job_title_display = "Senior AI Engineer / Python Developer"
+        else:
+            if not resume_file:
+                st.error("Please upload a resume file (PDF or DOCX) to continue.")
+                st.stop()
+            if not job_desc.strip():
+                st.error("Please paste a target job description to continue.")
+                st.stop()
 
-        update_status("Normalizing target job requirements...")
-        job_text = clean_job_description(job_desc)
+            # ── Step 1: Parse Documents ──
+            update_status("Reading and parsing candidate resume...")
+            resume_text = parse_resume(resume_file)
+
+            update_status("Normalizing target job requirements...")
+            job_text = clean_job_description(job_desc)
+            job_title_display = job_desc[:60].strip()
 
         # ── Step 2: AI Multi-Layer Analysis ──
         update_status("Executing NLP skill extraction & dense vector embedding match...")
@@ -153,7 +211,7 @@ if analyze_btn:
             interview_qs=pdf_interview_qs,
             roadmap=roadmap,
             candidate_meta=meta,
-            job_title=job_desc[:60].strip(),
+            job_title=job_title_display,
         )
 
         status.empty()  # Clear status message
