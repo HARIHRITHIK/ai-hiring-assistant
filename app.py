@@ -45,12 +45,12 @@ st.markdown("""
 # ─────────────────────────────────────────────────
 # 30-SECOND RECRUITER DEMO BANNER
 # ─────────────────────────────────────────────────
-SAMPLE_RESUME_TEXT = """ASWINI R
-Email: aswini.ai@gmail.com | Phone: +91 9876543210
+SAMPLE_RESUME_TEXT = """ALEX RIVERA
+Email: alex.rivera.dev@gmail.com | Phone: (555) 234-5678
 
 EDUCATION
 Bachelor of Technology in Artificial Intelligence and Data Science
-Sona College of Technology - CGPA: 8.20
+Metropolitan Institute of Technology - CGPA: 8.85
 
 TECHNICAL SKILLS
 Python, Machine Learning, Deep Learning, NLP, Data Science, Artificial Intelligence, LLaMA2, QLoRA, Generative AI, PyTorch, Transformers, HuggingFace, Pandas, NumPy, Scikit-learn, Streamlit, Git
