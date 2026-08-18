@@ -79,14 +79,14 @@ This document outlines the architectural design, data flow, and component specif
 $$\text{Cosine Similarity} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|_2 \|\mathbf{v}\|_2} = \mathbf{u} \cdot \mathbf{v}$$
 - The cosine similarity range $[0.10, 0.85]$ is mapped to a percentage score $[15\%, 98\%]$.
 
-### 3. Skill Taxonomy & Hybrid Scoring (`src/nlp/skill_list.py`, `src/nlp/qwen3_scoring.py`)
+### 3. Skill Taxonomy & Hybrid Scoring (`src/nlp/skill_list.py`, `src/nlp/scoring_engine.py`)
 - **Taxonomy:** Maintains a curated vocabulary of 200+ canonical technical skills across AI/ML, Cloud/DevOps, Languages, Backend, Frontend, and Security.
 - **Domain Expansion:** When job descriptions provide brief role titles (e.g. "DevOps Engineer"), the engine expands expected competencies using domain-specific mappings to prevent false negatives.
 - **Hybrid ATS Ensemble Formula:**
 $$\text{ATS Compatibility} = 0.50 \times \text{Semantic Score} + 0.50 \times \text{Skill Match Score}$$
 - **Job Title Filtering:** Automatically strips role labels (e.g. "Senior", "Developer", "Engineer") from the missing skills list so only concrete technical skills are flagged.
 
-### 4. Generative LLM Inference (`src/nlp/qwen3_scoring.py`)
+### 4. Generative LLM Inference (`src/nlp/scoring_engine.py`)
 - Loads `Qwen/Qwen2.5-0.5B-Instruct` locally from Hugging Face into memory.
 - **Optimization Strategy:**
   - `torch.float16` precision reduces memory consumption from ~1.2 GB to ~600 MB.

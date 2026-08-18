@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 from src.nlp.embedding import get_embeddings
 from src.nlp.skill_list import SKILL_SET, DOMAIN_SKILL_EXPANSION
-from src.nlp.qwen3_scoring import (
+from src.nlp.scoring_engine import (
     _extract_skills_nlp,
     _calculate_deterministic_metrics,
     _extract_candidate_meta,

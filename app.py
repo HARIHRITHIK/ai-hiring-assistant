@@ -3,7 +3,7 @@ import os
 import streamlit as st
 from src.data_processing.resume_parser import parse_resume
 from src.data_processing.job_parser import clean_job_description
-from src.nlp.qwen3_scoring import analyze_resume
+from src.nlp.scoring_engine import analyze_resume
 from src.report.pdf_report import generate_pdf_report
 from src.visualization.charts import plot_ats_gauge, plot_skill_breakdown
 from src.utils.logging import get_logger

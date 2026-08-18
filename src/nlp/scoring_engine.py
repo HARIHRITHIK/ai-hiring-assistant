@@ -1,8 +1,8 @@
-# src/nlp/qwen3_scoring.py
-"""Universal AI Resume Analyzer using Qwen2.5-0.5B-Instruct & Semantic Analytics.
+# src/nlp/scoring_engine.py
+"""AI Resume Analysis & Scoring Engine using Qwen2.5-0.5B-Instruct & Semantic Analytics.
 
-Provides fully dynamic, general-purpose resume metadata extraction, semantic skill matching,
-and 100% deterministic ATS scoring for ANY resume and ANY job description.
+Provides dynamic resume metadata extraction, semantic skill matching,
+and deterministic ATS scoring for resumes and job descriptions.
 """
 
 import os
