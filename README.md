@@ -1,8 +1,7 @@
-# 🧠 AI Resume & ATS Analytics Engine
+# AI Hiring Assistant
 
-> **An end-to-end NLP pipeline that evaluates resumes against job descriptions — delivering semantic compatibility scores, skill-gap diagnostics, LLM-generated interview guides, interactive visual charts, and structured PDF reports.**
+> **An end-to-end NLP talent intelligence platform that evaluates candidate resumes against job descriptions — delivering hybrid ATS compatibility scoring, skill gap diagnostics, LLM-generated interview preparation guides, interactive visual analytics, and structured PDF reports.**
 
-[![Live Demo](https://img.shields.io/badge/Streamlit-Live%20Demo-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://harihrithik-ai-hiring-assistant.streamlit.app/)
 [![Build & Tests](https://github.com/HARIHRITHIK/ai-hiring-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/HARIHRITHIK/ai-hiring-assistant/actions)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Transformers](https://img.shields.io/badge/HuggingFace-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black)](https://huggingface.co)
@@ -10,24 +9,86 @@
 
 ---
 
-## 🔗 Live Demo & Quick Evaluation
+## 🚀 Live Demo
 
-**[▶ Open Live App (Streamlit Cloud) →](https://harihrithik-ai-hiring-assistant.streamlit.app/)**  
-*(No login required · Includes a **⚡ 1-Click 30-Second Demo** to test immediately without uploading a file)*
+> **Live Demo:** [ADD LIVE DEMO URL HERE]
 
----
-
-## 📌 What This Solves
-
-Manual resume screening is slow, inconsistent, and prone to keyword-stuffing exploits. This system provides an automated, objective evaluation pipeline:
-
-- A **recruiter or hiring manager** uploads a candidate's resume (PDF/DOCX) or clicks **Try Demo**
-- The pipeline processes the text across **6 distinct NLP & AI layers**
-- **Output:** structured ATS scoring, skill-gap diagnostics, LLM-generated interview guide, Plotly visual charts, and a **downloadable executive PDF report**
+*(Deployable on Streamlit Community Cloud with zero-cost CPU infrastructure · No login or API keys required)*
 
 ---
 
-## 🏗️ System Architecture
+## 📸 Preview
+
+| Dashboard & Inputs | Candidate Profile & ATS Score |
+|:---:|:---:|
+| ![Dashboard](assets/screenshots/dashboard.png) | ![Analysis Results](assets/screenshots/analysis-results.png) |
+
+| Skill Diagnostics & Visual Analytics | Downloadable PDF Assessment Report |
+|:---:|:---:|
+| ![Skill Analysis](assets/screenshots/skill-analysis.png) | ![PDF Report](assets/screenshots/report.png) |
+
+### Adding Screenshots to GitHub
+1. Open the `assets/screenshots/` folder in your repository.
+2. Click **Add file** $\rightarrow$ **Upload files**.
+3. Upload your UI screenshots using these exact filenames: `dashboard.png`, `analysis-results.png`, `skill-analysis.png`, `report.png`.
+4. Commit the change; GitHub will automatically render them above.
+
+---
+
+## Problem
+
+- **High Screening Latency:** Engineering managers and recruiters spend hours manually screening resumes against technical job descriptions.
+- **Keyword Stuffing Exploits:** Legacy keyword-matching ATS software can be tricked by repeating keywords without semantic relevance.
+- **Unstructured Technical Interviews:** Interviewers often ask generic trivia rather than targeted questions assessing candidate-specific gaps and project depth.
+
+---
+
+## Solution
+
+The **AI Hiring Assistant** provides an automated, objective evaluation pipeline that:
+1. Ingests candidate resumes in **PDF** or **DOCX** format.
+2. Computes an **objective hybrid ATS score** combining dense vector semantic similarity with lexical skill taxonomy matching.
+3. Automatically identifies **verified strengths** and **missing qualifications**.
+4. Dynamically generates **candidate-specific interview questions** with evaluation criteria and a **30-60-90 day learning roadmap**.
+5. Compiles an **in-memory executive PDF report** ready for hiring managers and candidate debriefs.
+
+---
+
+## Key Features
+
+- ⚡ **1-Click 30-Second Recruiter Demo:** Evaluate a pre-configured AI Engineer profile against a real-world job description in one click without uploading a file.
+- 📄 **Multi-Format Ingestion:** Robust text extraction supporting multi-page PDF files (`pdfplumber`) and Word documents (`python-docx`).
+- 🎯 **Hybrid ATS Compatibility Engine:** Combines dense vector cosine similarity (`all-MiniLM-L6-v2`) with a curated 200+ skill taxonomy and role-aware domain expansion.
+- 🧠 **Local Open-Source LLM Inference:** Generates executive summaries, interview guides, and roadmaps using quantized `Qwen2.5-0.5B-Instruct` on CPU (`torch.float16`) with zero API costs.
+- 📊 **Visual Analytics Dashboard:** Dark-theme Plotly charts including an ATS score gauge and a stacked skill distribution comparison.
+- 📑 **In-Memory Corporate PDF Export:** Generates formatted multi-page PDF evaluation reports using `ReportLab 4.x` with safe XML character escaping.
+- 🧪 **Automated Testing Suite:** 18 deterministic unit tests (`pytest`) integrated with GitHub Actions CI.
+
+---
+
+## How It Works
+
+```
+Resume (PDF/DOCX) + Job Description
+              ↓
+  Multi-Format Text Extraction
+              ↓
+  spaCy NER & Regex Metadata Extraction
+              ↓
+  Dense Vector Semantic Similarity (all-MiniLM-L6-v2)
+              ↓
+  Curated Skill Taxonomy Matching (200+ Skills + Domain Expansion)
+              ↓
+  Hybrid Ensemble Scoring (50% Semantic + 50% Lexical Match)
+              ↓
+  Causal LM Text Generation (Qwen2.5-0.5B-Instruct fp16)
+              ↓
+  Interactive Streamlit UI + ReportLab PDF Report Export
+```
+
+---
+
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -68,89 +129,47 @@ Manual resume screening is slow, inconsistent, and prone to keyword-stuffing exp
          └────────────────────────┘
 ```
 
----
-
-## ⚙️ Core AI/ML Pipeline
-
-### Layer 3 — Semantic Similarity (Sentence Transformers)
-Resumes and job descriptions are converted into **normalized dense vector representations** using `all-MiniLM-L6-v2`. Cosine similarity between the embedding vectors forms the **semantic baseline score**.
-
-### Layer 4 — Hybrid Scoring Engine
-The final ATS score is a **weighted ensemble** of:
-- **50% Semantic Cosine Similarity** (embedding space proximity)
-- **50% Lexical & Domain Skill Match** (taxonomy lookup across 200+ technical skills + domain expansion)
-
-This prevents the score from being fooled by keyword stuffing while strictly assessing hard technical requirements.
-
-### Layer 5 — Causal LM Inference (Qwen2.5)
-`Qwen2.5-0.5B-Instruct` is executed with:
-- `torch.float16` precision — reduces memory consumption by ~50%
-- `device_map="cpu"` — runs reliably on zero-cost cloud CPU instances
-- Lazy singleton loading — loaded once and persisted in memory across sessions
-
-The model generates:
-- **Candidate executive assessment** (background, competencies, hiring recommendation)
-- **Tailored technical interview questions** with specific interviewer evaluation criteria
-- **Structured 30-60-90 day upskilling roadmap**
-
-### Layer 6 — Executive PDF Report (ReportLab)
-A downloadable PDF is generated in-memory with defensive XML escaping, corporate typography, candidate metadata header, score tables, and full roadmap.
+> For comprehensive architecture documentation and component data flow, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 
-## 🧩 Module Structure
-
-```
-├── app.py                          # Streamlit application entrypoint & UI
-├── .github/
-│   └── workflows/
-│       └── test.yml                # Automated GitHub Actions CI pipeline
-├── src/
-│   ├── data_processing/
-│   │   ├── resume_parser.py        # PDF/DOCX multi-format text extraction
-│   │   └── job_parser.py           # JD cleaning & normalisation
-│   ├── nlp/
-│   │   ├── qwen3_scoring.py        # Core AI orchestrator (LLM + scoring)
-│   │   ├── embedding.py            # Sentence-transformer embeddings (all-MiniLM-L6-v2)
-│   │   ├── skill_list.py           # Curated taxonomy: 200+ skills across 10 domains
-│   │   ├── skill_match.py          # Skill extraction and matching interface
-│   │   ├── ai_summary.py           # Summary and interview generation interface
-│   │   └── config.py               # Centralized configuration & thresholds
-│   ├── report/
-│   │   └── pdf_report.py           # ReportLab executive PDF generation
-│   ├── visualization/
-│   │   └── charts.py               # Dark-mode Plotly charts (gauge & bar)
-│   └── utils/
-│       └── logging.py              # Structured logging utility
-├── tests/
-│   ├── test_data_processing.py     # Parser unit tests
-│   ├── test_nlp_scoring.py         # Embedding & scoring unit tests
-│   ├── test_pdf_report.py          # PDF generation & XML safety tests
-│   └── test_visualization.py       # Plotly chart tests
-├── assets/style.css                # Custom dark-mode design system
-├── .streamlit/config.toml          # Streamlit theme & server configuration
-└── requirements.txt
-```
-
----
-
-## 🛠️ Tech Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend UI** | Streamlit | Interactive web app + 1-click demo + PDF download |
-| **Document Ingestion** | pdfplumber, python-docx | Text extraction from PDF and Word documents |
-| **NLP & Entity Matching** | spaCy, regex | Named entity recognition, skill taxonomy matching |
-| **Semantic Embeddings** | sentence-transformers | Dense vector representations (`all-MiniLM-L6-v2`) |
-| **Causal LLM** | HuggingFace (Qwen2.5-0.5B) | Executive summary, Q&A, and roadmap generation |
-| **Scoring Engine** | NumPy, scikit-learn | Cosine similarity & weighted hybrid ensemble |
-| **Visual Analytics** | Plotly | Dynamic ATS score gauge & skill distribution charts |
-| **Document Compilation** | ReportLab | In-memory corporate PDF report generation |
-| **CI / Testing** | Pytest, GitHub Actions | Automated unit and integration testing |
+| **Frontend UI** | Streamlit | Responsive dark-mode web application & interactive tabs |
+| **Document Ingestion** | pdfplumber, python-docx | Text extraction across PDF pages and Word documents |
+| **NLP & Entity NER** | spaCy, regex | Metadata extraction (Name, Education, Contact, Projects) |
+| **Semantic Embeddings** | sentence-transformers | 384-dimensional dense vector embeddings (`all-MiniLM-L6-v2`) |
+| **Causal LLM** | Hugging Face Transformers | Local CPU inference for text generation (`Qwen2.5-0.5B-Instruct`) |
+| **Scoring Engine** | NumPy, scikit-learn | Cosine similarity & weighted hybrid ATS ensemble |
+| **Visual Analytics** | Plotly | Dark-mode ATS compatibility gauge & skill distribution bar |
+| **PDF Generation** | ReportLab 4.x | In-memory corporate candidate assessment report compilation |
+| **Automated Testing** | Pytest | 18 unit and integration tests |
+| **CI / CD** | GitHub Actions | Automated test execution on every commit and pull request |
 
 ---
 
-## 🚀 Local Setup & Testing
+## Example Workflow
+
+For a detailed 2-minute walkthrough, see [DEMO.md](DEMO.md).
+
+1. **Input:** Upload candidate resume (`.pdf` or `.docx`) and paste target job description.
+2. **Analysis Execution:** Click **`Run AI Assessment →`** (or click **`⚡ Try Demo`**).
+3. **Review Profile:** Inspect candidate metadata, calculated ATS match percentage, and score cards.
+4. **Explore Tabs:**
+   - 📄 **Candidate Summary:** Executive summary covering academic background, competencies, and role alignment.
+   - ⚡ **Skill Diagnostics:** Verified matching skills vs. missing qualifications.
+   - 🎯 **Interview Guide:** Targeted technical interview questions with interviewer evaluation criteria.
+   - 🚀 **30-60-90 Roadmap:** Structured learning roadmap targeting identified skill gaps.
+   - 📊 **Visual Analytics:** Interactive ATS gauge and skill distribution charts.
+5. **Export:** Click **`📄 Download Full Assessment Report (PDF)`** to download the structured assessment document.
+
+---
+
+## Testing
+
+The project includes an automated test suite verifying document parsers, NLP embeddings, deterministic scoring bounds, XML safety in PDF generation, and Plotly visual figures.
 
 ```bash
 # 1. Clone repository
@@ -166,52 +185,78 @@ python -m venv .venv
 pip install -r requirements.txt
 pip install pytest
 
-# 4. Run automated test suite
+# 4. Run test suite
 pytest tests/ -v
+```
 
-# 5. Launch web application
-streamlit run app.py
+```
+============================= test session starts =============================
+tests/test_data_processing.py::test_clean_job_description_basic PASSED   [  5%]
+tests/test_data_processing.py::test_clean_job_description_empty PASSED   [ 11%]
+tests/test_data_processing.py::test_parse_resume_invalid_file PASSED     [ 16%]
+tests/test_data_processing.py::test_parse_resume_unsupported_extension PASSED [ 22%]
+tests/test_data_processing.py::test_parse_resume_empty_file PASSED       [ 27%]
+tests/test_nlp_scoring.py::test_skill_set_integrity PASSED               [ 33%]
+tests/test_nlp_scoring.py::test_domain_expansion_integrity PASSED        [ 38%]
+tests/test_nlp_scoring.py::test_skill_extraction_nlp PASSED              [ 44%]
+tests/test_nlp_scoring.py::test_job_title_filter PASSED                  [ 50%]
+tests/test_nlp_scoring.py::test_embeddings_generation PASSED             [ 55%]
+tests/test_nlp_scoring.py::test_deterministic_scoring_bounds PASSED      [ 61%]
+tests/test_nlp_scoring.py::test_candidate_metadata_extraction PASSED     [ 66%]
+tests/test_pdf_report.py::test_escape_xml PASSED                         [ 72%]
+tests/test_pdf_report.py::test_format_markdown_for_pdf PASSED            [ 77%]
+tests/test_pdf_report.py::test_generate_pdf_report_valid PASSED          [ 83%]
+tests/test_visualization.py::test_plot_ats_gauge_structure PASSED        [ 88%]
+tests/test_visualization.py::test_plot_ats_gauge_clamping PASSED         [ 94%]
+tests/test_visualization.py::test_plot_skill_breakdown PASSED            [100%]
+============================= 18 passed in 11.94s =============================
 ```
 
 ---
 
-## 📊 Output Breakdown
+## Deployment
 
-| Metric / Artifact | Description |
-|---|---|
-| **ATS Compatibility Score (%)** | Hybrid ensemble (50% dense vector similarity + 50% skill match) |
-| **Technical Skill Match (%)** | % of required target skills present in the resume |
-| **Verified Strengths** | Domain skills confirmed in both resume and JD |
-| **Skill Gaps** | Key requirements missing from candidate background |
-| **Executive AI Summary** | 3-paragraph recruiter review covering background and fit |
-| **Tailored Interview Guide** | Technical questions with specific evaluation criteria hints |
-| **30-60-90 Day Roadmap** | Phased upskilling plan targeting identified skill gaps |
-| **Visual Analytics** | Interactive Plotly gauge & skill distribution breakdown |
-| **Executive PDF Report** | Downloadable candidate evaluation report |
+### Local Deployment
+```bash
+streamlit run app.py
+```
 
----
-
-## 🔧 Engineering & Architectural Decisions
-
-**Why Qwen2.5-0.5B over paid API wrappers (GPT-4 / Claude)?**  
-To demonstrate the ability to serve, quantize, and optimize open-weights causal LLMs on zero-cost CPU infrastructure without third-party API keys or external latency bottlenecks.
-
-**Why a hybrid ATS score rather than pure embedding similarity?**  
-Pure cosine distance is easily confused by generic vocabulary overlap. The hybrid approach enforces hard technical requirements while maintaining semantic awareness.
-
-**Why not LangChain?**  
-The pipeline is intentionally built using core transformer libraries (`transformers`, `sentence-transformers`, `spaCy`) to show foundational understanding of NLP pipelines rather than wrapping simple prompts in multi-layer abstractions.
+### Streamlit Community Cloud (Zero-Cost Deployment)
+1. Fork or push this repository to GitHub.
+2. Log in to [share.streamlit.io](https://share.streamlit.io).
+3. Select this repository (`ai-hiring-assistant`), branch `main`, and main file path `app.py`.
+4. Click **Deploy**. Streamlit Cloud automatically manages dependencies via `requirements.txt`.
 
 ---
 
-## 👨‍💻 Author
+## Limitations
 
-**Hari Hrithik**  
-AI Engineer & Python Developer  
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=flat-square&logo=github)](https://github.com/HARIHRITHIK)
+- **Single-Candidate Evaluation:** Processes one candidate resume against one job description at a time (designed for focused evaluation rather than mass bulk batch processing).
+- **CPU Inference Latency:** Running local LLM token generation on free cloud CPU takes approximately 6–10 seconds.
+- **Digital Document Text:** Requires selectable text in PDF/DOCX documents; scanned bitmap images without embedded text layers require OCR pre-processing.
 
 ---
 
-## 📄 License
+## Future Improvements
 
-MIT © 2025 Hari Hrithik
+- [ ] Multi-candidate ranker allowing recruiters to upload multiple resumes and rank them against a single job description.
+- [ ] OCR integration via `pytesseract` to support image-scanned resumes.
+- [ ] Role-specific interview rubrics exportable directly to Notion or Google Docs.
+
+---
+
+## Technical Interview Concepts
+
+When discussing this project during technical interviews, key concepts demonstrated include:
+
+1. **Dense Vector Similarity:** Mapping unstructured text into 384-dimensional dense vectors using `sentence-transformers` and calculating cosine similarity ($\mathbf{u} \cdot \mathbf{v}$).
+2. **Hybrid Ensemble Scoring:** Mitigating keyword-stuffing exploits by combining 50% semantic proximity with 50% hard skill taxonomy matching.
+3. **Open-Source SLM Serving on CPU:** Optimizing `Qwen2.5-0.5B-Instruct` using `torch.float16` precision and singleton memory persistence to run reliably within 1 GB RAM limits.
+4. **Defensive PDF Architecture:** Implementing XML entity sanitization (`saxutils.escape`) to prevent ReportLab expat parser exceptions on special characters (`&`, `<`, `>`).
+5. **Automated Testing & CI:** Writing unit and integration test fixtures in `pytest` to guarantee deterministic scoring and parser reliability across commits.
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
