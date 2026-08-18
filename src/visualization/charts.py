@@ -18,15 +18,12 @@ def plot_ats_gauge(score: float) -> go.Figure:
     else:
         bar_color = "#ef4444"  # Red
 
+    formatted_score = f"{score:.1f}%" if score % 1 != 0 else f"{int(score)}%"
+
     fig = go.Figure(go.Indicator(
-        mode="gauge+number",
+        mode="gauge",
         value=score,
-        number={
-            'suffix': "%",
-            'font': {'size': 32, 'color': '#fafafa', 'family': 'Inter, sans-serif'},
-            'valueformat': '.1f' if score % 1 != 0 else '.0f'
-        },
-        domain={'x': [0.05, 0.95], 'y': [0, 1]},
+        domain={'x': [0.08, 0.92], 'y': [0.15, 0.95]},
         gauge={
             'axis': {
                 'range': [0, 100],
@@ -37,7 +34,7 @@ def plot_ats_gauge(score: float) -> go.Figure:
                 'tickvals': [0, 20, 40, 60, 80, 100],
                 'ticktext': ['0', '20', '40', '60', '80', '100']
             },
-            'bar': {'color': bar_color, 'thickness': 0.26},
+            'bar': {'color': bar_color, 'thickness': 0.28},
             'bgcolor': "rgba(255, 255, 255, 0.03)",
             'borderwidth': 1,
             'bordercolor': "#27272a",
@@ -60,13 +57,23 @@ def plot_ats_gauge(score: float) -> go.Figure:
             'font': {'size': 12, 'color': '#a1a1aa', 'family': 'Inter, sans-serif'},
             'x': 0.5,
             'xanchor': 'center',
-            'y': 0.95,
+            'y': 0.98,
             'yanchor': 'top'
         },
+        annotations=[
+            dict(
+                text=f"<b style='font-size:34px; color:#fafafa; font-family:Inter,sans-serif;'>{formatted_score}</b>",
+                x=0.5,
+                y=0.16,
+                showarrow=False,
+                xanchor='center',
+                yanchor='middle'
+            )
+        ],
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=20, r=20, t=35, b=10),
-        height=190,
+        margin=dict(l=15, r=15, t=35, b=15),
+        height=210,
     )
     return fig
 
