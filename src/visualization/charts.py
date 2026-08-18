@@ -21,10 +21,23 @@ def plot_ats_gauge(score: float) -> go.Figure:
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
-        number={'suffix': "%", 'font': {'size': 38, 'color': '#fafafa', 'family': 'Inter, sans-serif'}},
+        number={
+            'suffix': "%",
+            'font': {'size': 32, 'color': '#fafafa', 'family': 'Inter, sans-serif'},
+            'valueformat': '.1f' if score % 1 != 0 else '.0f'
+        },
+        domain={'x': [0.05, 0.95], 'y': [0, 1]},
         gauge={
-            'axis': {'range': [0, 100], 'tickcolor': '#52525b', 'tickwidth': 1, 'tickfont': {'color': '#71717a'}},
-            'bar': {'color': bar_color, 'thickness': 0.28},
+            'axis': {
+                'range': [0, 100],
+                'tickcolor': '#52525b',
+                'tickwidth': 1,
+                'tickfont': {'color': '#71717a', 'size': 10},
+                'tickmode': 'array',
+                'tickvals': [0, 20, 40, 60, 80, 100],
+                'ticktext': ['0', '20', '40', '60', '80', '100']
+            },
+            'bar': {'color': bar_color, 'thickness': 0.26},
             'bgcolor': "rgba(255, 255, 255, 0.03)",
             'borderwidth': 1,
             'bordercolor': "#27272a",
@@ -38,15 +51,22 @@ def plot_ats_gauge(score: float) -> go.Figure:
                 'thickness': 0.75,
                 'value': score
             }
-        },
-        title={'text': "<b>ATS COMPATIBILITY RATING</b>", 'font': {'size': 13, 'color': '#a1a1aa', 'family': 'Inter, sans-serif'}}
+        }
     ))
 
     fig.update_layout(
+        title={
+            'text': "<b>ATS COMPATIBILITY RATING</b>",
+            'font': {'size': 12, 'color': '#a1a1aa', 'family': 'Inter, sans-serif'},
+            'x': 0.5,
+            'xanchor': 'center',
+            'y': 0.95,
+            'yanchor': 'top'
+        },
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=25, r=25, t=40, b=20),
-        height=220,
+        margin=dict(l=20, r=20, t=35, b=10),
+        height=190,
     )
     return fig
 
