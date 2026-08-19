@@ -11,10 +11,42 @@
 ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-html, body, [class*="css"], [class*="st-"] {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+html, body, .stApp, p, div, input, textarea, button, select {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Ensure Material Symbols & Streamlit icon fonts are preserved */
+[data-testid*="Icon"],
+[data-testid="stIconMaterial"],
+[data-testid="stExpanderToggleIcon"],
+[class*="material-symbols"],
+[class*="stIcon"],
+span[translate="no"],
+.material-icons,
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded', 'Material Icons', sans-serif !important;
+  font-style: normal;
+  text-transform: none;
+  line-height: 1;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+/* Streamlit status widget clean dark-mode container */
+[data-testid="stStatusWidget"] {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  margin: 0.75rem 0 !important;
+}
+
+[data-testid="stStatusWidget"] [data-testid="stMarkdownContainer"] {
+  color: #a1a1aa !important;
+  font-size: 0.88rem !important;
 }
 
 /* ─────────────────────────────────────────
