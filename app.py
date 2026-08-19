@@ -141,17 +141,11 @@ with col_right:
 st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 analyze_btn = st.button("Run AI Assessment  →", use_container_width=True)
 
-# Detect input changes to clear stale results
-current_input_sig = f"{getattr(resume_file, 'name', '')}_{getattr(resume_file, 'size', 0)}_{job_desc.strip()}"
-if "last_input_sig" in st.session_state and st.session_state["last_input_sig"] != current_input_sig and not demo_btn:
-    st.session_state.pop("analysis_data", None)
-
 # ─────────────────────────────────────────────────
 # ANALYSIS ENGINE & RESULTS
 # ─────────────────────────────────────────────────
 if demo_btn or analyze_btn:
     if demo_btn:
-        st.session_state["last_input_sig"] = "__demo__"
         is_demo = True
     else:
         if not resume_file:
@@ -160,7 +154,6 @@ if demo_btn or analyze_btn:
         if not job_desc.strip():
             st.error("Please paste a target job description to continue.")
             st.stop()
-        st.session_state["last_input_sig"] = current_input_sig
         is_demo = False
 
     with st.status("Analyzing Candidate Profile...", expanded=True) as status_box:
