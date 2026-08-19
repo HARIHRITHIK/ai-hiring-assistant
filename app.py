@@ -141,90 +141,113 @@ with col_right:
 st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 analyze_btn = st.button("Run AI Assessment  →", use_container_width=True)
 
+# Detect input changes to clear stale results
+current_input_sig = f"{getattr(resume_file, 'name', '')}_{getattr(resume_file, 'size', 0)}_{job_desc.strip()}"
+if "last_input_sig" in st.session_state and st.session_state["last_input_sig"] != current_input_sig and not demo_btn:
+    st.session_state.pop("analysis_data", None)
+
 # ─────────────────────────────────────────────────
 # ANALYSIS ENGINE & RESULTS
 # ─────────────────────────────────────────────────
-if analyze_btn or demo_btn:
-    status = st.empty()
+if demo_btn or analyze_btn:
+    if demo_btn:
+        st.session_state["last_input_sig"] = "__demo__"
+        is_demo = True
+    else:
+        if not resume_file:
+            st.error("Please upload a resume file (PDF or DOCX) to continue.")
+            st.stop()
+        if not job_desc.strip():
+            st.error("Please paste a target job description to continue.")
+            st.stop()
+        st.session_state["last_input_sig"] = current_input_sig
+        is_demo = False
 
-    def update_status(msg: str):
-        status.markdown(f"""
-        <div style="display:flex; align-items:center; gap:0.6rem; color:#a1a1aa;
-                    font-size:0.88rem; padding:0.75rem 0;">
-            <span style="color:#3b82f6;">&#9632;</span> {msg}
-        </div>""", unsafe_allow_html=True)
-
-    try:
-        if demo_btn:
-            update_status("Loading sample candidate profile and job requirements...")
-            resume_text = SAMPLE_RESUME_TEXT
-            job_text = clean_job_description(SAMPLE_JOB_DESC)
-            job_title_display = "Senior AI Engineer / Python Developer"
-        else:
-            if not resume_file:
-                st.error("Please upload a resume file (PDF or DOCX) to continue.")
-                st.stop()
-            if not job_desc.strip():
-                st.error("Please paste a target job description to continue.")
-                st.stop()
-
-            # ── Step 1: Parse Documents ──
-            update_status("Reading and parsing candidate resume...")
-            resume_text = parse_resume(resume_file)
-
-            update_status("Normalizing target job requirements...")
-            job_text = clean_job_description(job_desc)
-            job_title_display = job_desc[:60].strip()
-
-        # ── Step 2: AI Multi-Layer Analysis ──
-        update_status("Executing NLP skill extraction & dense vector embedding match...")
-        result = analyze_resume(resume_text, job_text)
-
-        meta = result.get("candidate_meta", {})
-        match_result = {
-            "ats_score":           result.get("ats_score", 0.0),
-            "skill_match_percent": result.get("skill_match_percent", 0.0),
-            "missing_skills":      result.get("missing_skills", []),
-            "strengths":           result.get("strengths", []),
-            "weaknesses":          result.get("weaknesses", []),
-        }
-        summary      = result.get("summary", "")
-        interview_qs = result.get("suggested_interview_questions", [])
-        roadmap      = result.get("learning_roadmap", "")
-
-        # ── Step 3: Compile Executive PDF ──
-        update_status("Compiling executive PDF evaluation report...")
-        pdf_interview_qs = []
-        for item in interview_qs:
-            if isinstance(item, dict):
-                pdf_interview_qs.append(
-                    f"{item.get('question', '')} (Ideal Answer: {item.get('ideal_answer_hint', '')})"
-                )
+    with st.status("Analyzing Candidate Profile...", expanded=True) as status_box:
+        try:
+            if is_demo:
+                st.write("📄 Loading sample candidate resume & job description...")
+                resume_text = SAMPLE_RESUME_TEXT
+                job_text = clean_job_description(SAMPLE_JOB_DESC)
+                job_title_display = "Senior AI Engineer / Python Developer"
             else:
-                pdf_interview_qs.append(str(item))
+                st.write("📄 Reading and parsing candidate resume (PDF/DOCX)...")
+                resume_text = parse_resume(resume_file)
 
-        pdf_bytes = generate_pdf_report(
-            resume_text=resume_text,
-            job_text=job_text,
-            match_result=match_result,
-            summary=summary,
-            interview_qs=pdf_interview_qs,
-            roadmap=roadmap,
-            candidate_meta=meta,
-            job_title=job_title_display,
-        )
+                st.write("📋 Normalizing target job requirements...")
+                job_text = clean_job_description(job_desc)
+                job_title_display = job_desc[:60].strip()
 
-        status.empty()  # Clear status message
+            def stage_update(msg: str):
+                st.write(f"🧠 {msg}")
 
-    except Exception as err:
-        status.empty()
-        logger.error(f"Assessment error: {err}", exc_info=True)
-        st.error(f"Error analyzing documents: {err}")
-        st.stop()
+            result = analyze_resume(resume_text, job_text, stage_callback=stage_update)
 
-    # ═══════════════════════════════════════════════════
-    # RESULTS SECTION
-    # ═══════════════════════════════════════════════════
+            meta = result.get("candidate_meta", {})
+            match_result = {
+                "ats_score":           result.get("ats_score", 0.0),
+                "skill_match_percent": result.get("skill_match_percent", 0.0),
+                "missing_skills":      result.get("missing_skills", []),
+                "strengths":           result.get("strengths", []),
+                "weaknesses":          result.get("weaknesses", []),
+            }
+            summary      = result.get("summary", "")
+            interview_qs = result.get("suggested_interview_questions", [])
+            roadmap      = result.get("learning_roadmap", "")
+
+            # ── Step 3: Compile Executive PDF ──
+            st.write("📑 Compiling executive PDF evaluation report...")
+            pdf_interview_qs = []
+            for item in interview_qs:
+                if isinstance(item, dict):
+                    pdf_interview_qs.append(
+                        f"{item.get('question', '')} (Ideal Answer: {item.get('ideal_answer_hint', '')})"
+                    )
+                else:
+                    pdf_interview_qs.append(str(item))
+
+            pdf_bytes = generate_pdf_report(
+                resume_text=resume_text,
+                job_text=job_text,
+                match_result=match_result,
+                summary=summary,
+                interview_qs=pdf_interview_qs,
+                roadmap=roadmap,
+                candidate_meta=meta,
+                job_title=job_title_display,
+            )
+
+            status_box.update(label="✅ Assessment Complete!", state="complete", expanded=False)
+
+            st.session_state["analysis_data"] = {
+                "meta": meta,
+                "match_result": match_result,
+                "summary": summary,
+                "interview_qs": interview_qs,
+                "roadmap": roadmap,
+                "pdf_bytes": pdf_bytes,
+                "job_title_display": job_title_display,
+            }
+
+        except Exception as err:
+            status_box.update(label="❌ Assessment Failed", state="error", expanded=True)
+            logger.error(f"Assessment error: {err}", exc_info=True)
+            st.error(f"Analysis could not be completed: {err}")
+            st.stop()
+
+# ═══════════════════════════════════════════════════
+# RESULTS SECTION (Rendered from Session State)
+# ═══════════════════════════════════════════════════
+if "analysis_data" in st.session_state:
+    data = st.session_state["analysis_data"]
+    meta              = data["meta"]
+    match_result      = data["match_result"]
+    summary           = data["summary"]
+    interview_qs      = data["interview_qs"]
+    roadmap           = data["roadmap"]
+    pdf_bytes         = data["pdf_bytes"]
+    job_title_display = data["job_title_display"]
+
     st.markdown("""
     <div style="border-top: 1.5px solid #27272a; margin: 1.5rem 0;"></div>
     """, unsafe_allow_html=True)

@@ -8,7 +8,7 @@ and deterministic ATS scoring for resumes and job descriptions.
 import os
 import re
 import json
-from typing import Dict, Any, List, Set, Tuple
+from typing import Dict, Any, List, Set, Tuple, Optional, Callable
 import numpy as np
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -852,28 +852,45 @@ def _fallback_roadmap(meta: Dict, metrics: Dict) -> str:
 # SECTION 5: Main Analysis Orchestrator
 # ──────────────────────────────────────────────
 
-def analyze_resume(resume: str, job: str) -> Dict[str, Any]:
+def analyze_resume(
+    resume: str,
+    job: str,
+    stage_callback: Optional[Callable[[str], None]] = None
+) -> Dict[str, Any]:
     """Perform a fully general, candidate-personalized resume analysis for ANY resume & job."""
+    if stage_callback:
+        stage_callback("Extracting candidate metadata & technical skills...")
     meta = _extract_candidate_meta(resume)
+
+    if stage_callback:
+        stage_callback("Matching skills against taxonomy & calculating ATS score...")
     metrics = _calculate_deterministic_metrics(resume, job)
 
     # Pre-load model once
     try:
+        if stage_callback:
+            stage_callback("Initializing AI language models...")
         _load_model()
     except Exception as e:
-        print(f"[AI Analyzer] Model loading note: {e}")
+        logger.warning(f"Model loading note: {e}")
 
     # ── Generate Summary ──
+    if stage_callback:
+        stage_callback("Generating candidate executive assessment...")
     summary = _generate_summary(resume, job, meta, metrics)
     if not summary or len(summary) < 100:
         summary = _fallback_summary(meta, metrics)
 
     # ── Generate Interview Questions ──
+    if stage_callback:
+        stage_callback("Formulating targeted technical interview questions...")
     interview_qs = _generate_interview_questions(resume, job, meta, metrics)
     if not interview_qs or len(interview_qs) < 3:
         interview_qs = _fallback_interview_questions(meta, metrics)
 
     # ── Generate Roadmap ──
+    if stage_callback:
+        stage_callback("Constructing 30-60-90 day learning roadmap...")
     roadmap = _generate_roadmap(meta, metrics, job)
     if not roadmap or len(roadmap) < 80:
         roadmap = _fallback_roadmap(meta, metrics)
