@@ -3,6 +3,7 @@
 > **An end-to-end NLP platform that evaluates candidate resumes against job descriptions — delivering hybrid ATS compatibility scoring, skill gap diagnostics, LLM-generated interview preparation guides, interactive visual analytics, and structured PDF reports.**
 
 [![Build & Tests](https://github.com/HARIHRITHIK/ai-hiring-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/HARIHRITHIK/ai-hiring-assistant/actions)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://harihrithik-ai-hiring-assistant.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![Transformers](https://img.shields.io/badge/HuggingFace-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black)](https://huggingface.co)
 [![License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](LICENSE)
@@ -11,7 +12,7 @@
 
 ## 🚀 Live Demo
 
-> **Live Demo:** [ADD LIVE DEMO URL HERE]
+> **Live Application:** [harihrithik-ai-hiring-assistant.streamlit.app](https://harihrithik-ai-hiring-assistant.streamlit.app/)
 
 *(Runs on CPU infrastructure · No third-party API keys or login required)*
 

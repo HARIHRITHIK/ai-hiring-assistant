@@ -1,6 +1,6 @@
 # 2-Minute Recruiter Demo
 
-> **Live Demo:** [ADD LIVE DEMO URL HERE]
+> **Live Demo:** [harihrithik-ai-hiring-assistant.streamlit.app](https://harihrithik-ai-hiring-assistant.streamlit.app/)
 
 This quick walkthrough demonstrates how the **AI Hiring Assistant** evaluates candidate resumes against real-world job requirements in under 30 seconds.
 
