@@ -27,12 +27,6 @@
 |:---:|:---:|
 | ![Skill Analysis](assets/screenshots/skill-analysis.png) | ![PDF Report](assets/screenshots/report.png) |
 
-### Adding Screenshots to GitHub
-1. Open the `assets/screenshots/` folder in your repository.
-2. Click **Add file** $\rightarrow$ **Upload files**.
-3. Upload your UI screenshots using these exact filenames: `dashboard.png`, `analysis-results.png`, `skill-analysis.png`, `report.png`.
-4. Commit the change; GitHub will automatically render them above.
-
 ---
 
 ## Problem
